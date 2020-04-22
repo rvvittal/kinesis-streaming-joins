@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.amazonaws.samples.kinesis.streams.join.model.Product;
 import com.github.javafaker.Faker;
 
 public class ProductGenerator {
@@ -39,11 +40,11 @@ public class ProductGenerator {
 		try  {
 			
 			
-			FileWriter writer = new FileWriter("products.csv"); 
+			FileWriter writer = new FileWriter("products.json"); 
 			bw = new BufferedWriter(writer);
 
 			for(Product p : productList) {
-				bw.write(p.getProductAsCsv());
+				bw.write(p.toJsonAsString());
 				bw.newLine();
 			}
 			

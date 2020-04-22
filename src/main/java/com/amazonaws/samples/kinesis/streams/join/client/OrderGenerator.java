@@ -16,6 +16,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.amazonaws.samples.kinesis.streams.join.model.Order;
 import com.amazonaws.samples.kinesis.streams.join.model.OrderItem;
+import com.amazonaws.samples.kinesis.streams.join.model.Product;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 
 /**
@@ -33,6 +36,11 @@ public class OrderGenerator {
 	private static double orderAmount = orderStartAmount;
 	private static int orderCount = 10000;
 	private static int itemCount = 1000;
+	
+	private final static ObjectMapper JSON = new ObjectMapper();
+	static {
+		JSON.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
 	
 	
 
@@ -68,7 +76,7 @@ public class OrderGenerator {
 			ordersBuffWriter = new BufferedWriter(ordersWriter);
 			
 			
-			Map<String, Product> productMap = loadProducts("products.csv");
+			Map<String, Product> productMap = loadProducts("products.json");
 			
 	
 			for (int i = 0; i < orderCount; i++) {
@@ -175,24 +183,20 @@ public class OrderGenerator {
 
 	}
 	
-	private static Map<String,Product> loadProducts(String csvFile) {
+	private static Map<String,Product> loadProducts(String jsonFile) {
 		
 	    String line = "";
 	    String cvsSplitBy = ",";
 	    Map<String, Product> productList = new HashMap<>();
 	    Product product;
 	
-	    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(jsonFile))) {
 	
 	        while ((line = br.readLine()) != null) {
-	
-	            // use comma as separator
-	            String[] item = line.split(cvsSplitBy);
+	        	
+	            product =  JSON.readValue(line, Product.class);
+				productList.put(String.valueOf(product.getProductId()),product);
 	            
-	            product = new Product(Long.valueOf(item[0]), item[1], item[2]);
-				productList.put(item[0],product);
-	            
-	
 	        }
 	
 	    } catch (IOException e) {

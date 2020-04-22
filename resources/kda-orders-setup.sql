@@ -17,7 +17,8 @@ CREATE OR REPLACE STREAM "ORDERITEMSTREAM"(
    "itemStatus" VARCHAR(8),
    "itemQuantity" INTEGER, 
    "orderDateTime" TIMESTAMP,
-   "recordType" VARCHAR(16));
+   "recordType" VARCHAR(16),
+   "productName"VARCHAR(32));
    
 CREATE OR REPLACE STREAM "ORDER_ITEM_ENRICHED_STREAM"(
    "event_ts" TIMESTAMP,
@@ -33,7 +34,8 @@ CREATE OR REPLACE STREAM "ORDER_ITEM_ENRICHED_STREAM"(
     "itemId" INTEGER, 
    "itemAmount" DECIMAL(1,1),
     "itemQuantity" INTEGER, 
-   "itemStatus" VARCHAR(8) 
+   "itemStatus" VARCHAR(8),
+   "productName" VARCHAR(32) 
    );
    
    
@@ -71,16 +73,22 @@ INSERT INTO "ORDERITEMSTREAM" (
                           "itemAmount", 
                           "itemQuantity",
                           "itemStatus",
-                          "recordType"
+                          "recordType",
+                          "productName"
                     	  ) 
 SELECT STREAM 
-			  "orderId", 
-			  "itemId",
-              "itemAmount", 
-              "itemQuantity",
-              "itemStatus",
-              "recordType"
-FROM "SOURCE_SQL_STREAM_001" where "recordType" = 'OrderItem';
+			  s."orderId", 
+			  s."itemId",
+              s."itemAmount", 
+              s."itemQuantity",
+              s."itemStatus",
+              s."recordType",
+              p."productName"
+FROM "SOURCE_SQL_STREAM_001" AS s
+LEFT JOIN "products" AS p
+ON s."itemId" = p."productId"
+where s."recordType" = 'OrderItem';
+
 
 CREATE OR REPLACE PUMP "ORDER_ITEM_ENRICHED_PUMP" AS 
 INSERT INTO "ORDER_ITEM_ENRICHED_STREAM" (
@@ -97,13 +105,14 @@ INSERT INTO "ORDER_ITEM_ENRICHED_STREAM" (
 						  "itemId",
                           "itemAmount", 
                           "itemQuantity",
-                          "itemStatus"
+                          "itemStatus",
+                          "productName"
                     	  ) 
 
 SELECT STREAM
      ROWTIME,
      o."orderId", o."orderAmount", o."orderStatus", o."orderDateTime", o."shipToName",o."shipToAddress", o."shipToCity", o."shipToState", o."shipToZip", 
-     i."itemId", i."itemAmount", i."itemQuantity", i."itemStatus"
+     i."itemId", i."itemAmount", i."itemQuantity", i."itemStatus", i."productName"
 FROM ORDERITEMSTREAM OVER (RANGE INTERVAL '1' MINUTE PRECEDING)  AS i
 JOIN ORDERSTREAM OVER (RANGE INTERVAL '1' MINUTE PRECEDING)  AS o
 ON   i."orderId" = o."orderId";
