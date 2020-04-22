@@ -3,7 +3,7 @@ Demonstrates how to use Kinesis Data Streams and Kinesis Data Analytics applicat
 
 # Architecture
 
-![alt text] (https://rvvittal-aws-immersion-day.s3.amazonaws.com/GitResources/Kinesis-Streaming-ETL.png)
+![alt text] (./GitResources/Kinesis-Streaming-ETL.png)
 
 
 # How to build this architecture
