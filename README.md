@@ -3,7 +3,7 @@ Demonstrates how to use Kinesis Data Streams and Kinesis Data Analytics applicat
 
 # Architecture
 
-![alt text] (./GitResources/Kinesis-Streaming-ETL.png)
+![alt text] (./resources/Kinesis-Streaming-ETL.png)
 
 
 # How to build this architecture
@@ -16,9 +16,17 @@ Demonstrates how to use Kinesis Data Streams and Kinesis Data Analytics applicat
 
 ## Installation
 
-1. Create Kinesis Data Stream - OrdersStream - with 2 shards
-1. Create Kinesis Data Analytics Application - KDA-OrderProcess with runtime as SQL
-  1. Connect to Streaming Data Source - OrdersStream
+1. Create Data Sets for ingesting events and reference data
+     1. Clone/Download this repo to your workstation
+     2. From command line navgiate to project root folder i.e. kinesis-streaming-joins
+     3. Build the jar file using mvn clean package
+     4. Create S3 bucket e.g. <userid>-kinesis-orders and create folders orders, products
+     5. C
+2. Create Kinesis Data Stream - OrdersStream - with 2 shards
+3. 
+4. Create Kinesis Data Analytics Application - KDA-OrderProcess - with runtime as SQL
+     1. Connect to Streaming Data Source - OrdersStream
+     2. Enter 
 
 
 

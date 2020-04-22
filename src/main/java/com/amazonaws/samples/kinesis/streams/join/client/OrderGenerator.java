@@ -5,12 +5,14 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.cli.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,11 +33,15 @@ public class OrderGenerator {
 	private static long orderStartId = 10000001;
 	private static int itemStartId = 999900001;
 	private static AtomicLong orderId;
-	private static AtomicLong itemId;
 	private static double orderStartAmount = 1000.00;
 	private static double orderAmount = orderStartAmount;
 	private static int orderCount = 10000;
 	private static int itemCount = 1000;
+	private static String ORDERS = "orders";
+	private static String PRODUCTS = "products";
+	private static int productCount = 1000;
+	private static int productStartId = itemStartId;
+	
 	
 	private final static ObjectMapper JSON = new ObjectMapper();
 	static {
@@ -47,21 +53,51 @@ public class OrderGenerator {
 	private static final Log LOG = LogFactory.getLog(OrderGenerator.class);
 
 	public static void main(String[] args)  {
-
-		if (args != null && args.length >= 3) {
-			orderStartId = Long.parseLong(args[0]);
-			orderStartAmount = Double.parseDouble(args[1]);
-			orderAmount = orderStartAmount;
-			orderCount = Integer.parseInt(args[2]);
-			if(args.length >= 4) itemStartId = Integer.parseInt(args[3]);
-			if(args.length >= 5) itemCount = Integer.parseInt(args[4]);
-		} else {
-			LOG.error("OrderStartId, OrderBaseAmount, OrderCount arguments required");
+		
+		String launchType=""; 
+		
+	
+		Options options = new Options()
+		        .addOption("launchType", true, "use keyword orders or products to generate that type of json records")
+		        .addOption("orderStartId", true, "Starting Id for orders")
+		        
+		        .addOption("orderCount", true, "Count of orders to generate")
+		        .addOption("itemStartId", true, "Starting Id for items")
+		        .addOption("itemCount", true, "Count of items to generate")
+		        .addOption("productStartId", true, "Starting Id for products.. should correlate with itemStartId")
+		        .addOption("productCount", true, "Count of products to generate");
+		
+		CommandLine line=null;
+		try {
+			line = new DefaultParser().parse(options, args);
+		} catch (ParseException e1) {
+			LOG.error(e1);
+			e1.printStackTrace();
+		}
+	    
+		  
+	    if (line.hasOption("help")) {
+	      new HelpFormatter().printHelp(MethodHandles.lookup().lookupClass().getName(), options);
+	    } 
+	    
+	   
+		launchType = line.getOptionValue("launchType", "orders");
+		orderStartId = Long.parseLong(line.getOptionValue("orderStartId", "10000001"));
+		orderCount = Integer.parseInt(line.getOptionValue("orderCount", "10000"));
+		itemStartId = Integer.parseInt(line.getOptionValue("itemStartId", "999900001"));
+		itemCount = Integer.parseInt(line.getOptionValue("itemCount", "10000"));
+		productCount = Integer.parseInt(line.getOptionValue("productCount", "10000"));
+		productStartId = Integer.parseInt(line.getOptionValue("productStartId", "999900001"));
+		
+		if(PRODUCTS.equalsIgnoreCase(launchType)) {
+			ProductGenerator.genProducts(productStartId, productCount);
 			System.exit(0);
 		}
+			
+		
+		
 
 		orderId = new AtomicLong(orderStartId);
-		itemId = new AtomicLong(itemStartId);
 		
 		Faker faker = new Faker();
 

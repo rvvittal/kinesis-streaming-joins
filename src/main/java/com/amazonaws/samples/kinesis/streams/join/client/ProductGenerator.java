@@ -16,12 +16,14 @@ import com.github.javafaker.Faker;
 public class ProductGenerator {
 	
 	private static final Log LOG = LogFactory.getLog(ProductGenerator.class);
-	private static int productCount = 1000;
-	private static int itemIdStart = 999900001;
-	private static AtomicLong itemId = new AtomicLong(itemIdStart);
+	
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+
+	public static void genProducts(int productStartId, int productCount ) {
+		
+		LOG.info("Generating " + productCount +" Products..");
+		
+		AtomicLong itemId = new AtomicLong(productStartId);
 		
 		Faker faker = new Faker();
 		Product product;
@@ -60,6 +62,8 @@ public class ProductGenerator {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			LOG.info("Generated " + productCount +" Products..");
 			
 		}
 		
