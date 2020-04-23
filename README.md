@@ -68,7 +68,7 @@ The build for this architecture simulates ingestion pipeline for Kinesis Data An
   
 ### Experiment Results
 
-####  Experiment #1:  
+####  Experiment:  
 
 #####  Inputs 
 
@@ -85,7 +85,7 @@ The build for this architecture simulates ingestion pipeline for Kinesis Data An
 #####  Results    
 
 	  1. 1000K order items are enriched with order event data and product reference data and persisted to DynamoDb
-	  2. Maximum pipeline latency from event ingestion(point of entry) to record landing in Dynamodb(point of exit) is 1300 millisec.
+	  2. Observed a maximum of 1300 milli-seconds latency from the time of event ingestion to the pipeline to the time record landed in DynamoDb
 	  
 #####  CloudWatch Dashboard
 
