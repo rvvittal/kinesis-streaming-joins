@@ -17,7 +17,7 @@ The build for this architecture simulates ingestion pipeline for Kinesis Data An
 
 ## Build Steps
 
-###1. Create Data Sets for ingesting events and reference data
+### Create Data Sets for ingesting events and reference data
      1. Clone/Download this repo to your workstation
      2. From command line navigate to project root folder i.e. kinesis-streaming-joins
      3. Build the jar file using mvn clean package
@@ -27,14 +27,14 @@ The build for this architecture simulates ingestion pipeline for Kinesis Data An
      7. Generate orders: java -jar target/kinesis-streaming-joins-0.0.1-SNAPSHOT.jar -launchType orders -orderCount 500000. For every order, it generates two child items.
      8. Upload orders.json to s3: aws s3 cp orders.json s3://{user-id}/orders/orders.json  <br/>
 
-###2. Ingest order and items events to kinesis data streams
+### Ingest order and items events to kinesis data streams
      1. Create Kinesis Data Stream - OrdersStream - with 2 shards 
      2. Clone/Download repo https://github.com/aws-samples/amazon-kinesis-replay to your workstation
      3. Go to root of the project and build jar file: mvn clean package
      4. Ingest order and item events: java -jar target/amazon-kinesis-replay-1.0-SNAPSHOT.jar -streamName {streamName} -streamRegion {region} -bucketName {userid}-kinesis-orders -bucketRegion {region} 		-objectPrefix orders -timestampAttributeName orderDateTime 
   
      
-###3. Build Kinesis Data Analytics Application for joining orders and items streams and products reference table
+### Build Kinesis Data Analytics Application for joining orders and items streams and products reference table
      1. Go to Kinesis Data Analytics under Kinesis and create Kinesis Data Analytics Application - KDA-Orders-App - choose runtime as SQL
      2. Connect to Streaming Data Source - OrdersStream. It will automatically discover the schema for streaming data source
      2. Terminate the events ingestion from your command line using Ctrl-C
@@ -47,7 +47,7 @@ The build for this architecture simulates ingestion pipeline for Kinesis Data An
      8. On the KDA-Orders-App Real time analytics page, select ORDER_ITEM_ENRICHED_STREAM to see the result of joining the streaming records for order, order_item and the reference lookup for products 
 
 
-###4.  Setup Enriched Order Stream Processing
+### Setup Enriched Order Stream Processing
     1. Create Kinesis Data Stream - OrdersEnrichedStream - with 4 shards 
     2. On KDA-Orders-App, select connect to destination, then choose OrdersEnriched for kinesis data stream and  ORDER_ITEM_ENRICHED_STEAM for 
        in-application stream and finally save and continue.
@@ -59,14 +59,14 @@ The build for this architecture simulates ingestion pipeline for Kinesis Data An
     
 
     
-###5.  Run tests, montior metrics and validate results
+### Run tests, montior metrics and validate results
     1.   Ingest order and item events as you did in step 2.4 
     2.   Monitor metrics for Kinesis data streams - GetRecords.IteratorAgeMilliseconds, ReadProvisionedThroughputExceeded, WriteProvisionedThroughputExceeded
     3.   Monitor metrics for Lambda - Duration, IteratorAge, Error count and success rate
     4.   Monitor metrics for KDA - millisBehindLatest
     5.   Verify records and counts in DynamoDB
   
-###6. Experiment Results
+### Experiment Results
 
 ####  Experiment #1:  
 
