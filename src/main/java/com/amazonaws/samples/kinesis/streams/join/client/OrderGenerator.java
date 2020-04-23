@@ -36,8 +36,7 @@ public class OrderGenerator {
 	private static double orderStartAmount = 1000.00;
 	private static double orderAmount = orderStartAmount;
 	private static int orderCount = 10000;
-	private static int itemCount = 1000;
-	private static String ORDERS = "orders";
+
 	private static String PRODUCTS = "products";
 	private static int productCount = 1000;
 	private static int productStartId = itemStartId;
@@ -85,8 +84,8 @@ public class OrderGenerator {
 		orderStartId = Long.parseLong(line.getOptionValue("orderStartId", "10000001"));
 		orderCount = Integer.parseInt(line.getOptionValue("orderCount", "10000"));
 		itemStartId = Integer.parseInt(line.getOptionValue("itemStartId", "999900001"));
-		itemCount = Integer.parseInt(line.getOptionValue("itemCount", "10000"));
-		productCount = Integer.parseInt(line.getOptionValue("productCount", "10000"));
+		
+		productCount = Integer.parseInt(line.getOptionValue("productCount", "1000"));
 		productStartId = Integer.parseInt(line.getOptionValue("productStartId", "999900001"));
 		
 		if(PRODUCTS.equalsIgnoreCase(launchType)) {
@@ -190,7 +189,7 @@ public class OrderGenerator {
 		
 		Random r = new Random();
 		int low = (int)itemStartId;
-		int high = (int)itemStartId+itemCount;
+		int high = (int)itemStartId+productCount;
 		int result = r.nextInt(high-low) + low;
 		
 		return String.valueOf(result);
